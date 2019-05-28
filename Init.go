@@ -9,18 +9,20 @@ import (
 type Processo struct {
 	nome string
 	burst int
+	trest int
 	tcheg int
 	quantum int
 	prioridade int
 	tespera int 
 	tretorno int 
-	tfim int 
+	tMod int 
 	tresp int 
 }
 
 func main(){
 	var algoritmo int
 	var modo string
+	burst_total := 0
 	processos := []Processo{}
 
 	fmt.Println("Escolha seu algoritmo:\n1.FCFS\n2.SJF\n3.SRTF\n4.Round Robin\n5.Multinível\n\ta.primeiro nível - RR\n\tb.segundo nível - FCFS")
@@ -35,6 +37,7 @@ func main(){
 		var burst int
 		var nome string
 		var tcheg int
+		
 
 		fmt.Println("Digite a quantidade de processos:")
 		fmt.Scanln(&qtd)
@@ -45,8 +48,8 @@ func main(){
 			fmt.Scanln(&tcheg)
 
 			nome = "P" + strconv.Itoa(i)
-
-			processos = append(processos, Processo{nome,burst,tcheg,0,0,0,0,0,0})
+			burst_total+=burst
+			processos = append(processos, Processo{nome,burst,burst,tcheg,0,0,0,0,0,0})
 		}
 
 	} else if modo == "L" {
@@ -62,7 +65,8 @@ func main(){
 		processos = sjf(processos)
 		_ = processos
 	} else if algoritmo == 3{
-		fmt.Println("algoritmo SRTF")
+		processos = srtf(processos, burst_total)
+		_ = processos
 	} else if algoritmo == 4{
 		fmt.Println("algoritmo RR")
 	} else if algoritmo == 5{
@@ -98,7 +102,6 @@ func fcfs(processos []Processo) []Processo {
 	for i := 0; i < len(processos); i++  {
 		
 		processos[i].tespera = time - processos[i].tcheg
-		processos[i].tresp = time - processos[i].tcheg
 		time += processos[i].burst
 		processos[i].tretorno = time - processos[i].tcheg
 	}
@@ -120,9 +123,25 @@ func sjf(processos []Processo) []Processo {
 	// Simulando Processamento
 	for i := 0; i < len(processos); i++  {	
 		processos[i].tespera = time - processos[i].tcheg
-		processos[i].tresp = time - processos[i].tcheg
 		time += processos[i].burst
 		processos[i].tretorno = time - processos[i].tcheg
+	}
+
+	return processos
+}
+
+func srtf(processos []Processo, burst_total int) []Processo {
+	var time int 
+	time = 0
+	// Executando no t0 	
+	pAtual := processos[0]
+	pAtual.tespera += time - pAtual.tMod
+	time+=1
+	pAtual.trest -= 1
+
+	for ;time <= burst_total;	
+	{
+		
 	}
 
 	return processos
