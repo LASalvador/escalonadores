@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
-import "strconv"
+import (
+	"fmt"
+ 	"strconv"
+ )
 
 
 type Processo struct {
@@ -57,7 +59,8 @@ func main(){
 		processos = fcfs(processos)
 		_ = processos
 	} else if algoritmo == 2{
-		fmt.Println("algoritmo SJF")
+		processos = sjf(processos)
+		_ = processos
 	} else if algoritmo == 3{
 		fmt.Println("algoritmo SRTF")
 	} else if algoritmo == 4{
@@ -91,8 +94,31 @@ func main(){
 func fcfs(processos []Processo) []Processo {
 	var time int
 	time = 0
+	// Simulando processamentos
 	for i := 0; i < len(processos); i++  {
 		
+		processos[i].tespera = time - processos[i].tcheg
+		processos[i].tresp = time - processos[i].tcheg
+		time += processos[i].burst
+		processos[i].tretorno = time - processos[i].tcheg
+	}
+
+	return processos
+}
+
+func sjf(processos []Processo) []Processo {
+	var time int
+	time = 0
+	// Ordenando o vetor de acordo com tcheg e burst
+	increasingTime := func(p1, p2 *Processo) bool {
+		return p1.tcheg < p2.tcheg
+	}
+	increasingBurst := func(p1, p2 *Processo) bool {
+		return p1.burst < p2.burst
+	}
+	OrderedBy(increasingTime, increasingBurst).Sort(processos)
+	// Simulando Processamento
+	for i := 0; i < len(processos); i++  {	
 		processos[i].tespera = time - processos[i].tcheg
 		processos[i].tresp = time - processos[i].tcheg
 		time += processos[i].burst
