@@ -157,28 +157,28 @@ func rr(processos []Processo, burst_total int, quantum int) []Processo {
 	tamanho := len(processos)
 
 	for ;time < burst_total; {
-		p := processos[pos]
-		fmt.Printf("%d %d %d", pos, p.trest, time)
-		if p.trest == 0 {
+		// p := processos[pos]
+		// fmt.Printf("%d %d %d\n", pos, processos[pos].trest, time)
+		if processos[pos].trest == 0 {
 			pos = (pos + 1) % tamanho
 			continue
 		}
 
-		p.tespera =  p.tespera + (time - p.tMod)
+		processos[pos].tespera =  processos[pos].tespera + (time - processos[pos].tMod)
 
-		if p.trest < quantum {
-			time += p.trest
-			p.trest = p.trest - p.trest
+		if processos[pos].trest < quantum {
+			time += processos[pos].trest
+			processos[pos].trest -= processos[pos].trest
 		} else 	{
 			time +=quantum
-			p.trest = p.trest - quantum
+			processos[pos].trest -= quantum
 		}
 
-		if p.trest == 0	{
-			p.tretorno =  time - p.tcheg
+		if processos[pos].trest == 0	{
+			processos[pos].tretorno =  time - processos[pos].tcheg
 		}
 
-		p.tMod = time
+		processos[pos].tMod = time
 		pos = (pos + 1) % tamanho
 	}
 	return processos
