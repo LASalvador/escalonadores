@@ -68,7 +68,11 @@ func main(){
 		processos = srtf(processos, burst_total)
 		_ = processos
 	} else if algoritmo == 4{
-		fmt.Println("algoritmo RR")
+		var quantum int
+		fmt.Println("Digite o quantum:",)
+		fmt.Scanln(&quantum)
+		processos = rr(processos, burst_total, quantum)
+		_ = processos
 	} else if algoritmo == 5{
 		fmt.Println("algoritmo Multinível")
 	} else {
@@ -144,5 +148,38 @@ func srtf(processos []Processo, burst_total int) []Processo {
 		
 	}
 
+	return processos
+}
+
+func rr(processos []Processo, burst_total int, quantum int) []Processo {
+	time := 0
+	pos := 0
+	tamanho := len(processos)
+
+	for ;time < burst_total; {
+		p := processos[pos]
+		fmt.Printf("%d %d %d", pos, p.trest, time)
+		if p.trest == 0 {
+			pos = (pos + 1) % tamanho
+			continue
+		}
+
+		p.tespera =  p.tespera + (time - p.tMod)
+
+		if p.trest < quantum {
+			time += p.trest
+			p.trest = p.trest - p.trest
+		} else 	{
+			time +=quantum
+			p.trest = p.trest - quantum
+		}
+
+		if p.trest == 0	{
+			p.tretorno =  time - p.tcheg
+		}
+
+		p.tMod = time
+		pos = (pos + 1) % tamanho
+	}
 	return processos
 }
