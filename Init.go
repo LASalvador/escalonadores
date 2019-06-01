@@ -139,20 +139,63 @@ func sjf(processos []Processo) []Processo {
 }
 
 func srtf(processos []Processo, burst_total int) []Processo {
-	var time int 
-	time = 0
-	// Executando no t0 	
-	pAtual := processos[0]
-	pAtual.tespera += time - pAtual.tMod
-	time+=1
-	pAtual.trest -= 1
+	completos := 0
+	time := 0
+	menorTrest := 60000
+    menorPosicao := 0 
+   	bandeira := false
+   	tfim :=0
+   	n := len(processos)
+   	// Encontrando o tempo de espera
+   	for ;completos != n; {
+   		//  Encontrando o processo com menor tempo restante no tempo atual 
+       for j:=0; j < n ; j++ {
+       	if (processos[j].tcheg <= time) && (processos[j].trest < menorTrest) && processos[j].trest > 0 {
+       		menorTrest = processos[j].trest
+       		menorPosicao = j
+       		bandeira = true
+       	}
+       }
 
-	for ;time <= burst_total;	
-	{
-		
-	}
+       if bandeira == false {
+       		time++
+       		continue
+       }
+      // Executando o processo uma unidade de tempo
+       processos[menorPosicao].trest--
 
-	return processos
+      // Atualizando menor burst
+       menorTrest = processos[menorPosicao].trest
+       if(menorTrest == 0){
+       		menorTrest = 60000
+       }
+
+       // Caso o processo seja concluído
+       if(processos[menorPosicao].trest == 0 ) {
+       	  // Incrementando completos
+       	  completos++
+       	  bandeira = false
+       	  // encontrando tempo atual
+       	  tfim = time + 1
+
+       	  // Calculando tempo de espera
+       	  processos[menorPosicao].tespera = tfim - processos[menorPosicao].burst - processos[menorPosicao].tcheg
+
+       	  if(processos[menorPosicao].tespera < 0){
+       	  	processos[menorPosicao].tespera = 0
+       	  }
+
+       }
+       // Incrementando tempo
+       time++
+   	}
+
+   	// Calculando t de retorno
+   	for i:=0; i<n; i ++ {
+   		processos[i].tretorno = processos[i].burst + processos[i].tespera
+   	}
+
+   	return processos
 }
 
 func rr(processos []Processo, burst_total int, quantum int) []Processo {
