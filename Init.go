@@ -74,7 +74,11 @@ func main(){
 		processos = rr(processos, burst_total, quantum)
 		_ = processos
 	} else if algoritmo == 5{
-		fmt.Println("algoritmo Multinível")
+		var quantum int
+		fmt.Println("Digite o quantum:",)
+		fmt.Scanln(&quantum)
+		processos = mn(processos, burst_total, quantum)
+		_ = processos
 	} else {
 		fmt.Println("Escolha inválida!!")
 	}
@@ -182,4 +186,47 @@ func rr(processos []Processo, burst_total int, quantum int) []Processo {
 		pos = (pos + 1) % tamanho
 	}
 	return processos
+}
+
+
+func mn(processos []Processo, burst_total int, quantum int) []Processo {
+	time := 0
+	tamanho := len(processos)
+	// Round Robin
+	for pos := 0; pos < tamanho; pos++  {
+		if processos[pos].trest == 0 {
+			continue
+		}
+
+		processos[pos].tespera =  processos[pos].tespera + (time - processos[pos].tMod)
+
+		if processos[pos].trest < quantum {
+			time += processos[pos].trest
+			processos[pos].trest -= processos[pos].trest
+		} else 	{
+			time +=quantum
+			processos[pos].trest -= quantum
+		}
+
+		if processos[pos].trest == 0	{
+			processos[pos].tretorno =  time - processos[pos].tcheg
+		}
+
+		processos[pos].tMod = time	
+	}
+
+	time = 0
+	// First Come first Served
+	for i := 0; i < tamanho; i++ {
+		if processos[i].trest == 0 {
+			continue
+		}
+
+		processos[i].tespera += time - processos[i].tcheg
+		time += processos[i].burst
+		processos[i].tretorno += time - processos[i].tcheg
+	}
+
+	return processos
+
 }
