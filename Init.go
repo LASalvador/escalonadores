@@ -25,11 +25,19 @@ func main(){
 	burst_total := 0
 	processos := []Processo{}
 
-	fmt.Println("Escolha seu algoritmo:\n1.FCFS\n2.SJF\n3.SRTF\n4.Round Robin\n5.Multinível\n\ta.primeiro nível - RR\n\tb.segundo nível - FCFS")
+	for ;; {
+	fmt.Println("Escolha seu algoritmo:\n1.FCFS\n2.SJF\n3.SRTF\n4.Round Robin\n5.Multinível\n\ta.primeiro nível - RR\n\tb.segundo nível\n6 - SAIR - FCFS")
 	fmt.Scanln(&algoritmo)
 
-	fmt.Println("Inserção de processos:\n 1.use M para manual\n 2.Use L para ler arquivos")
+	if algoritmo == 6{ 
+		break
+	}	
+	fmt.Println("Inserção de processos:\n 1.use M para manual\n 2.Use L para ler arquivos\n  3. Use S para Sair")
 	fmt.Scanln(&modo)
+
+	if modo == "S"{
+		break
+	}
 
 	//Trabalhar o modo de leitura de dados
 	if modo == "M" {
@@ -101,6 +109,7 @@ func main(){
 	retornomedio = retornototal / len(processos)
 	fmt.Printf("T.Espera Medio:%d\n", esperamedia)
 	fmt.Printf("T.Retorno Medio:%d\n", retornomedio)
+	}
 }
 
 func fcfs(processos []Processo) []Processo {
