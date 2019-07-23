@@ -26,7 +26,7 @@ func main(){
 	processos := []Processo{}
 
 	for ;; {
-	fmt.Println("Escolha seu algoritmo:\n1.FCFS\n2.SJF\n3.SRTF\n4.Round Robin\n5.Multinível\n\ta.primeiro nível - RR\n\tb.segundo nível\n6 - SAIR - FCFS")
+	fmt.Println("Escolha seu algoritmo:\n1.FCFS\n2.SJF\n3.SRTF\n4.Round Robin\n5.Multinível\n\ta.primeiro nível - RR\n\tb.segundo nível\n6 - SAIR")
 	fmt.Scanln(&algoritmo)
 
 	if algoritmo == 6{ 
